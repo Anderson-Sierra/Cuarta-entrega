@@ -1,0 +1,90 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class calculadoracompleja:
+    def __init__(self):
+        self.ventana = tk.Tk()
+        self.ventana.title("calculadora multiple")
+        self.ventana.geometry("320x250")
+        
+        self.crear_interfaz()
+    
+    def crear_interfaz(self):
+        # campos de entrada
+        tk.Label(self.ventana, text="numero 1:").pack()
+        self.entrada1 = tk.Entry(self.ventana, width=15)
+        self.entrada1.pack()
+        
+        tk.Label(self.ventana, text="numero 2:").pack()
+        self.entrada2 = tk.Entry(self.ventana, width=15)
+        self.entrada2.pack()
+        
+        # resultado
+        self.etiqueta_resultado = tk.Label(self.ventana, text="", justify="left")
+        self.etiqueta_resultado.pack(pady=10)
+        
+        # botones
+        marco_botones = tk.Frame(self.ventana)
+        marco_botones.pack(pady=10)
+        
+        tk.Button(marco_botones, text="calcular todo", 
+                 command=self.calcular_todo).pack(side=tk.LEFT, padx=6)
+        tk.Button(marco_botones, text="limpiar", 
+                 command=self.limpiar).pack(side=tk.LEFT, padx=6)
+    
+    def obtener_numeros(self):
+        """obtiene y valida los numeros"""
+        try:
+            num1 = float(self.entrada1.get())
+            num2 = float(self.entrada2.get())
+            return num1, num2
+        except ValueError:
+            raise ValueError("debe ingresar valores numericos")
+    
+    def calcular_todo(self):
+        """realiza multiples operaciones con diferentes excepciones"""
+        try:
+            a, b = self.obtener_numeros()
+            resultado = ""
+            
+            # 1. division - puede dar division por cero
+            try:
+                division = a / b
+                resultado += f"division: {a} / {b} = {division:.2f}\n"
+            except ZeroDivisionError:
+                resultado += f"division: {a} / {b} = error (cero)\n"
+            
+            # 2. raiz cuadrada de la diferencia - puede dar math domain error
+            try:
+                from math import sqrt
+                diferencia = a - b
+                raiz = sqrt(diferencia)
+                resultado += f"raiz({a}-{b}) = {raiz:.2f}\n"
+            except ValueError:
+                resultado += f"raiz({a}-{b}) = error (negativo)\n"
+            
+            # 3. conversion a entero - puede dar overflow
+            try:
+                entero = int(a ** b)
+                resultado += f"entero({a}^{b}) = {entero}\n"
+            except OverflowError:
+                resultado += f"entero({a}^{b}) = error (muy grande)\n"
+            
+            self.etiqueta_resultado.config(text=resultado)
+            
+        except ValueError as e:
+            messagebox.showerror("error", str(e))
+    
+    def limpiar(self):
+        """limpia todos los campos"""
+        self.entrada1.delete(0, tk.END)
+        self.entrada2.delete(0, tk.END)
+        self.etiqueta_resultado.config(text="")
+    
+    def ejecutar(self):
+        """inicia la aplicacion"""
+        self.ventana.mainloop()
+
+if __name__ == "__main__":
+    app = calculadoracompleja()
+    app.ejecutar()
