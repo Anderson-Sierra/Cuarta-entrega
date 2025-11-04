@@ -1,0 +1,52 @@
+import tkinter as tk
+from tkinter import messagebox
+
+class CalculadoraSimple:
+    def __init__(self):
+        self.ventana = tk.Tk()
+        self.ventana.title("Division")
+        self.ventana.geometry("250x150")
+        
+        # entradas
+        tk.Label(self.ventana, text="Dividendo:").pack()
+        self.entrada1 = tk.Entry(self.ventana)
+        self.entrada1.pack()
+        
+        tk.Label(self.ventana, text="Divisor:").pack()
+        self.entrada2 = tk.Entry(self.ventana)
+        self.entrada2.pack()
+        
+        # resultado (en blanco al inicio)
+        self.resultado = tk.Label(self.ventana, text="")
+        self.resultado.pack(pady=5)
+        
+        # botones
+        tk.Button(self.ventana, text="Dividir", command=self.dividir).pack(side="left", padx=10)
+        tk.Button(self.ventana, text="Limpiar", command=self.limpiar).pack(side="right", padx=10)
+    
+    def dividir(self):
+        try:
+            dividendo = float(self.entrada1.get())
+            divisor = float(self.entrada2.get())
+            
+            if divisor == 0:
+                messagebox.showerror("Error", "no se puede dividir por cero")
+                return
+                
+            resultado = dividendo / divisor
+            self.resultado.config(text=f"resultado: {resultado:.2f}")
+            
+        except ValueError:
+            messagebox.showerror("Error", "ingrese numeros validos")
+    
+    def limpiar(self):
+        self.entrada1.delete(0, tk.END)
+        self.entrada2.delete(0, tk.END)
+        self.resultado.config(text="")  # en blanco al limpiar
+    
+    def ejecutar(self):
+        self.ventana.mainloop()
+
+if __name__ == "__main__":
+    app = CalculadoraSimple()
+    app.ejecutar()
